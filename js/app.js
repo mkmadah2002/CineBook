@@ -16,6 +16,7 @@
 // TODO : créez ici des constantes explicites pour les éléments nécessaires.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+const filmsContaner = document.querySelector("#films-container");
 
 // ==================================================
 // 0 BIS - MÉMORISER L'ÉTAT DE L'APPLICATION
@@ -26,7 +27,7 @@
 // PISTES : que faut-il remettre à zéro lorsqu'un autre film est choisi ?
 // TODO : déclarez trois variables avec des valeurs initiales adaptées.
 // ÉCRIVEZ VOTRE CODE ICI :
-
+const state = [];
 
 // ==================================================
 // US01 - AFFICHER LES FILMS
@@ -40,6 +41,27 @@
 // MODÈLE : observez l'élément <article data-film-id="1"> dans index.html.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+for (let i = 0; i < films.length; i++) {
+  const newCard = `    
+    <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg" data-film-id="${films[i].id}">
+        <div class="relative">
+            <img src="${films[i].affiche}" alt="${films[i].description}" class="aspect-[2/3] w-full object-cover">
+            <span class="absolute bottom-3 right-3 rounded-full bg-white/95 px-3 py-1 text-xs font-extrabold shadow-lg">
+               ${films[i].prix} DH
+            </span>
+        </div>
+        <div class="p-4">
+               <p class="text-xs font-bold uppercase tracking-wider text-cine-red">${films[i].genre}</p>
+               <h3 class="mt-1 text-lg font-black">${films[i].titre}</h3>
+               <p class="mt-2 text-sm text-slate-500">${Math.floor(films[i].duree / 60)} h ${films[i].duree % 60} m</p>
+               <button id="${films[i].id}" type="button" class="mt-4 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 font-extrabold text-slate-700">Choisir
+                  ce film</button>
+        </div>
+    </article>
+    `;
+
+  filmsContaner.innerHTML += newCard;
+}
 
 // ==================================================
 // US02 - SÉLECTIONNER UN FILM
@@ -53,6 +75,20 @@
 // MODÈLE : #film-details contient déjà un exemple de détail à reproduire.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+const btns = document.querySelectorAll("button");
+
+btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    if (e.currentTarget.innerText != "selectioner") {
+      e.currentTarget.innerText = "selectioner";
+      e.currentTarget.classList.replace("bg-slate-50", "bg-cine-red",);
+      e.currentTarget.classList.replace("text-slate-700", "bg-cine-red",);
+
+
+    }
+
+  });
+});
 
 // ==================================================
 // US03 - AFFICHER LES SÉANCES
@@ -64,7 +100,6 @@
 // MODÈLE : les trois boutons statiques de #seances-container montrent le HTML attendu.
 // ÉCRIVEZ VOTRE CODE ICI :
 
-
 // ==================================================
 // US04 - SÉLECTIONNER UNE SÉANCE
 // ==================================================
@@ -73,7 +108,6 @@
 // QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
 // TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
 // ÉCRIVEZ VOTRE CODE ICI :
-
 
 // ==================================================
 // US05 - AFFICHER LES 30 SIÈGES
@@ -86,7 +120,6 @@
 // MODÈLE : #sieges-container contient les 30 sièges statiques et leurs classes Tailwind.
 // ÉCRIVEZ VOTRE CODE ICI :
 
-
 // ==================================================
 // US06 - SÉLECTIONNER ET DÉSÉLECTIONNER DES SIÈGES
 // ==================================================
@@ -95,7 +128,6 @@
 // QUESTIONS : Comment empêcher le clic sur une place occupée ?
 // TODO : écouter chaque siège disponible et actualiser son état visuel.
 // ÉCRIVEZ VOTRE CODE ICI :
-
 
 // ==================================================
 // US07 - CALCULER LE TOTAL ET METTRE À JOUR LE RÉCAPITULATIF
@@ -107,7 +139,6 @@
 // MODÈLE : le récapitulatif HTML affiche des exemples de valeurs déjà remplies.
 // ÉCRIVEZ VOTRE CODE ICI :
 
-
 // ==================================================
 // US08 - CONFIRMER LA RÉSERVATION
 // ==================================================
@@ -117,7 +148,6 @@
 // QUESTIONS : Quelles conditions rendent une réservation valide ?
 // TODO : écouter #confirmer-reservation et construire un message clair.
 // ÉCRIVEZ VOTRE CODE ICI :
-
 
 // PREMIER TEST CONSEILLÉ :
 // console.log(films);
