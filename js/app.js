@@ -27,7 +27,8 @@ const filmsContaner = document.querySelector("#films-container");
 // PISTES : que faut-il remettre à zéro lorsqu'un autre film est choisi ?
 // TODO : déclarez trois variables avec des valeurs initiales adaptées.
 // ÉCRIVEZ VOTRE CODE ICI :
-const state = [];
+let currentfilm = {};
+let seanceid = 0;
 
 // ==================================================
 // US01 - AFFICHER LES FILMS
@@ -74,21 +75,40 @@ for (let i = 0; i < films.length; i++) {
 // PISTE : un changement de film doit aussi réinitialiser séance et sièges.
 // MODÈLE : #film-details contient déjà un exemple de détail à reproduire.
 // ÉCRIVEZ VOTRE CODE ICI :
+function selectionFilm() {
+  const btns = filmsContaner.querySelectorAll('[type="button"]');
+  const filmdet = document.querySelector("#film-details");
 
-const btns = document.querySelectorAll("button");
+  btns.forEach((e) => {
+    e.addEventListener("click", (e) => {
+      btns.forEach((elm) => {
+        elm.innerText = "Choisir ce film";
+        elm.classList.replace("bg-cine-red", "bg-slate-50");
+        elm.classList.replace("bg-cine-red", "text-slate-700");
+      });
 
-btns.forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    if (e.currentTarget.innerText != "selectioner") {
-      e.currentTarget.innerText = "selectioner";
-      e.currentTarget.classList.replace("bg-slate-50", "bg-cine-red",);
-      e.currentTarget.classList.replace("text-slate-700", "bg-cine-red",);
+      e.target.innerText = "selectioner";
+      e.target.classList.replace("bg-slate-50", "bg-cine-red");
+      e.target.classList.replace("text-slate-700", "bg-cine-red");
+      currentfilm = films.find((film) => film.id == e.target.id);
+      console.log(currentfilm);
 
-
-    }
-
+      filmdet.innerHTML = `
+     <img src="${currentfilm.affiche}" alt="${currentfilm.titre}"
+                class="aspect-[2/3] w-24 rounded-xl object-cover shadow-md">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-xl font-black">${currentfilm.titre}</h3><span
+                    class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">${currentfilm.prix} DH</span>
+                </div>
+                <p class="mt-2 text-sm font-semibold text-slate-500">${currentfilm.genre} · ${Math.floor(currentfilm.duree / 60)} h ${currentfilm.duree % 60} m</p>
+                <p class="mt-3 leading-7 text-slate-600">${currentfilm.description}</p>
+     `;
+      afficheSeances();
+    });
   });
-});
+}
+selectionFilm();
 
 // ==================================================
 // US03 - AFFICHER LES SÉANCES
@@ -100,6 +120,21 @@ btns.forEach((btn) => {
 // MODÈLE : les trois boutons statiques de #seances-container montrent le HTML attendu.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+function afficheSeances() {
+  const seancesContainer = document.querySelector("#seances-container");
+
+  seancesContainer.innerHTML = "";
+  currentfilm.seances.forEach((seance) => {
+    seancesContainer.innerHTML += `
+      <button type="button" data-seance-id="${seance.id}" class="rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700">
+           ${seance.horaire}
+        </button>
+`;
+  });
+
+  selectionerSeance(seancesContainer);
+}
+
 // ==================================================
 // US04 - SÉLECTIONNER UNE SÉANCE
 // ==================================================
@@ -108,6 +143,22 @@ btns.forEach((btn) => {
 // QUESTIONS : Faut-il autoriser une séance qui n'appartient pas au film choisi ?
 // TODO : retrouver la séance, modifier l'état et réinitialiser les sièges choisis.
 // ÉCRIVEZ VOTRE CODE ICI :
+
+function selectionerSeance(seancesContainer) {
+  const seancesBtns = seancesContainer.querySelectorAll('[type="button"]');
+  seancesBtns.forEach((seanceBtn) => {
+    seanceBtn.addEventListener("click", (event) => {
+      seancesBtns.forEach((seanceBtn) => {
+        seanceBtn.className =
+          "rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700";
+        });
+        seanceid = event.target.getAttribute('data-seance-id')
+        console.log(seanceid)
+      event.target.className =
+        "rounded-xl bg-cine-red px-5 py-3 font-bold text-white shadow-md";
+    });
+  });
+}
 
 // ==================================================
 // US05 - AFFICHER LES 30 SIÈGES
@@ -119,6 +170,9 @@ btns.forEach((btn) => {
 // PISTE : rangees et siegesParRangee sont fournis dans data.js.
 // MODÈLE : #sieges-container contient les 30 sièges statiques et leurs classes Tailwind.
 // ÉCRIVEZ VOTRE CODE ICI :
+const siegesContainer = document.querySelector("#sieges-container")
+
+
 
 // ==================================================
 // US06 - SÉLECTIONNER ET DÉSÉLECTIONNER DES SIÈGES
