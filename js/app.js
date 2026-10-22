@@ -29,6 +29,7 @@ const filmsContaner = document.querySelector("#films-container");
 // ÉCRIVEZ VOTRE CODE ICI :
 let currentfilm = {};
 let seanceid = 0;
+let reserved = []
 
 // ==================================================
 // US01 - AFFICHER LES FILMS
@@ -151,9 +152,10 @@ function selectionerSeance(seancesContainer) {
       seancesBtns.forEach((seanceBtn) => {
         seanceBtn.className =
           "rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700";
-        });
-        seanceid = event.target.getAttribute('data-seance-id')
-        console.log(seanceid)
+      });
+      seanceid = event.target.getAttribute("data-seance-id");
+      console.log(seanceid);
+      creerSieges(seanceid)
       event.target.className =
         "rounded-xl bg-cine-red px-5 py-3 font-bold text-white shadow-md";
     });
@@ -170,7 +172,27 @@ function selectionerSeance(seancesContainer) {
 // PISTE : rangees et siegesParRangee sont fournis dans data.js.
 // MODÈLE : #sieges-container contient les 30 sièges statiques et leurs classes Tailwind.
 // ÉCRIVEZ VOTRE CODE ICI :
-const siegesContainer = document.querySelector("#sieges-container")
+function creerSieges(seanceid) {
+const siegesContainer = document.querySelector("#sieges-container");
+siegesContainer.innerHTML=''
+  for (let index = 0; index < rangees.length; index++) {    
+    const span = document.createElement("span");
+    span.className = "self-center text-xs font-extrabold text-slate-500";
+    span.textContent = rangees[index];
+    siegesContainer.appendChild(span);
+    for (let j = 1; j <= siegesParRangee; j++) {
+      const btn = document.createElement("button");
+      btn.className = currentfilm.seances.find((seance)=>seance.id==seanceid).siegesOccupes.includes(rangees[index] + j)?
+      "aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50": 
+      "aspect-square rounded-lg bg-blue-600 text-xs font-bold text-white";
+      if(btn.className === "aspect-square rounded-lg bg-slate-400 text-xs font-bold text-white opacity-50"){
+        btn.disabled =true
+      }
+      btn.textContent = rangees[index] + j;
+      siegesContainer.appendChild(btn);
+    }
+  }  
+}
 
 
 
