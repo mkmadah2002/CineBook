@@ -30,7 +30,7 @@ const filmsContaner = document.querySelector("#films-container");
 let currentfilm = {};
 let seanceid = 0;
 let reserved = []
-
+let selectedSeance ="00:00"
 // ==================================================
 // US01 - AFFICHER LES FILMS
 // ==================================================
@@ -92,7 +92,6 @@ function selectionFilm() {
       e.target.classList.replace("bg-slate-50", "bg-cine-red");
       e.target.classList.replace("text-slate-700", "bg-cine-red");
       currentfilm = films.find((film) => film.id == e.target.id);
-      console.log(currentfilm);
 
       filmdet.innerHTML = `
      <img src="${currentfilm.affiche}" alt="${currentfilm.titre}"
@@ -154,10 +153,11 @@ function selectionerSeance(seancesContainer) {
           "rounded-xl border border-slate-300 bg-slate-50 px-5 py-3 font-bold text-slate-700";
       });
       seanceid = event.target.getAttribute("data-seance-id");
-      console.log(seanceid);
-      creerSieges(seanceid)
+
+      selectedSeance = event.target.textContent
       event.target.className =
         "rounded-xl bg-cine-red px-5 py-3 font-bold text-white shadow-md";
+      creerSieges(seanceid)
     });
   });
 }
@@ -191,7 +191,9 @@ siegesContainer.innerHTML=''
       btn.textContent = rangees[index] + j;
       siegesContainer.appendChild(btn);
     }
-  }  
+  }
+
+  SelctdeselectSieges(siegesContainer)
 }
 
 
@@ -205,6 +207,37 @@ siegesContainer.innerHTML=''
 // TODO : écouter chaque siège disponible et actualiser son état visuel.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+function SelctdeselectSieges(siegesContainer){
+  let nuoberdereserv = reserved.length
+  siegesContainer.querySelectorAll("button").forEach(sieges =>{
+  sieges.addEventListener("click",(event)=>{
+  event.target.classList.toggle("bg-cine-red")
+  if (![...event.target.classList].includes("bg-cine-red")) {
+     reserved.splice(reserved.indexOf(event.target.textContent),1)
+    nuoberdereserv = reserved.length
+    claculerTotal(reserved)
+  }else{
+    reserved.push(event.target.textContent)
+    nuoberdereserv = reserved.length
+    claculerTotal(reserved)
+  }
+})
+
+})
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
 // ==================================================
 // US07 - CALCULER LE TOTAL ET METTRE À JOUR LE RÉCAPITULATIF
 // ==================================================
@@ -214,6 +247,26 @@ siegesContainer.innerHTML=''
 // TODO : écrire une fonction appelée après chaque changement de sélection.
 // MODÈLE : le récapitulatif HTML affiche des exemples de valeurs déjà remplies.
 // ÉCRIVEZ VOTRE CODE ICI :
+
+function claculerTotal(reserved) {
+
+  const film = document.getElementById("recap-film")
+  const seance = document.getElementById("recap-seance")
+  const nombreSieges = document.getElementById("nombre-sieges")
+  const siegesSelectionnes = document.getElementById("sieges-selectionnes")
+  const prixTotal = document.getElementById("prix-total")
+
+
+  film.textContent = currentfilm.titre
+  seance.textContent = selectedSeance
+  nombreSieges.textContent = reserved.length
+  siegesSelectionnes.innerText= " "
+   reserved.forEach(reserved => {
+     siegesSelectionnes.textContent += `${reserved},`
+   })
+  prixTotal.innerText = reserved.length * currentfilm.prix
+  confermation()
+}
 
 // ==================================================
 // US08 - CONFIRMER LA RÉSERVATION
@@ -225,6 +278,20 @@ siegesContainer.innerHTML=''
 // TODO : écouter #confirmer-reservation et construire un message clair.
 // ÉCRIVEZ VOTRE CODE ICI :
 
+function confermation(){
+  const confiratioonbtn= document.getElementById("confirmer-reservation")
+  confiratioonbtn.addEventListener("click",(event)=>{
+    currentfilm.seances.forEach(seance =>{
+      if(seance.id==seanceid){
+        seance.siegesOccupes = seance.siegesOccupes.concat(reserved)
+        console.log(seance)
+        creerSieges(seanceid)
+      }
+
+    })
+  })
+
+}
 // PREMIER TEST CONSEILLÉ :
 // console.log(films);
 // Décommentez temporairement cette ligne pour explorer les données, puis avancez.
